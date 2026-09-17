@@ -512,6 +512,10 @@ footer a { color: var(--orange); text-decoration: none; }
             <input type="tel" id="uphone" name="phone" placeholder="(928) 555-0000" autocomplete="tel" required>
           </div>
           <div class="form-group">
+            <label for="uaddress">Service Address</label>
+            <input type="text" id="uaddress" name="address" placeholder="Street, city, ZIP" autocomplete="street-address" required>
+          </div>
+          <div class="form-group">
             <label for="service">Type of Service</label>
             <select id="service" name="service" required>
               <option value="">Select a service...</option>
@@ -528,7 +532,7 @@ footer a { color: var(--orange); text-decoration: none; }
             <label for="details">Tell Us What You&apos;ve Got</label>
             <textarea id="details" name="details" placeholder="Describe what needs to be removed — approximate amount, any large or heavy items, etc."></textarea>
           </div>
-          <p class="form-error" id="formError">Please fill in your name, phone number, and service type.</p>
+          <p class="form-error" id="formError">Please fill in your name, phone number, service address, and service type.</p>
           <button type="submit" class="form-submit">Send My Quote Request &#8594;</button>
         </form>
         <div class="form-success" id="formSuccess">
@@ -572,9 +576,10 @@ footer a { color: var(--orange); text-decoration: none; }
     var fname   = document.getElementById("fname").value.trim();
     var lname   = document.getElementById("lname").value.trim();
     var phone   = document.getElementById("uphone").value.trim();
+    var address = document.getElementById("uaddress").value.trim();
     var service = document.getElementById("service").value;
     var err     = document.getElementById("formError");
-    if (!fname || !lname || !phone || !service) {
+    if (!fname || !lname || !phone || !address || !service) {
       if (e) e.preventDefault();
       err.style.display = "block";
       return false;
