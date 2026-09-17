@@ -491,24 +491,29 @@ footer a { color: var(--orange); text-decoration: none; }
 
       <div class="quote-form">
         <div class="form-title">Free Quote Request</div>
-        <form id="quoteForm" novalidate>
+        <form id="quoteForm" action="https://formsubmit.co/junkreaper.net@gmail.com" method="POST" novalidate>
+          <input type="hidden" name="_subject" value="Junk Reaper — New quote request">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+          <input type="hidden" name="_next" value="https://www.junkreaper.net/?quote=sent#quote">
           <div class="form-row">
             <div class="form-group">
               <label for="fname">First Name</label>
-              <input type="text" id="fname" placeholder="John" autocomplete="given-name">
+              <input type="text" id="fname" name="first_name" placeholder="John" autocomplete="given-name" required>
             </div>
             <div class="form-group">
               <label for="lname">Last Name</label>
-              <input type="text" id="lname" placeholder="Smith" autocomplete="family-name">
+              <input type="text" id="lname" name="last_name" placeholder="Smith" autocomplete="family-name" required>
             </div>
           </div>
           <div class="form-group">
             <label for="uphone">Phone Number</label>
-            <input type="tel" id="uphone" placeholder="(928) 555-0000" autocomplete="tel">
+            <input type="tel" id="uphone" name="phone" placeholder="(928) 555-0000" autocomplete="tel" required>
           </div>
           <div class="form-group">
             <label for="service">Type of Service</label>
-            <select id="service">
+            <select id="service" name="service" required>
               <option value="">Select a service...</option>
               <option value="furniture">Furniture Removal</option>
               <option value="home">Home Cleanout</option>
@@ -521,10 +526,10 @@ footer a { color: var(--orange); text-decoration: none; }
           </div>
           <div class="form-group">
             <label for="details">Tell Us What You&apos;ve Got</label>
-            <textarea id="details" placeholder="Describe what needs to be removed — approximate amount, any large or heavy items, etc."></textarea>
+            <textarea id="details" name="details" placeholder="Describe what needs to be removed — approximate amount, any large or heavy items, etc."></textarea>
           </div>
           <p class="form-error" id="formError">Please fill in your name, phone number, and service type.</p>
-          <button type="button" class="form-submit" onclick="handleSubmit()">Send My Quote Request &#8594;</button>
+          <button type="submit" class="form-submit">Send My Quote Request &#8594;</button>
         </form>
         <div class="form-success" id="formSuccess">
           <div class="check">&#9989;</div>
@@ -563,17 +568,33 @@ footer a { color: var(--orange); text-decoration: none; }
     if (menu.classList.contains("open") && !menu.contains(e.target) && !toggle.contains(e.target)) closeMenu();
   });
 
-  function handleSubmit() {
+  function handleSubmit(e) {
     var fname   = document.getElementById("fname").value.trim();
     var lname   = document.getElementById("lname").value.trim();
     var phone   = document.getElementById("uphone").value.trim();
     var service = document.getElementById("service").value;
     var err     = document.getElementById("formError");
-    if (!fname || !lname || !phone || !service) { err.style.display = "block"; return; }
+    if (!fname || !lname || !phone || !service) {
+      if (e) e.preventDefault();
+      err.style.display = "block";
+      return false;
+    }
     err.style.display = "none";
-    document.getElementById("quoteForm").style.display = "none";
-    document.getElementById("formSuccess").style.display = "block";
+    return true;
   }
+  (function() {
+    var form = document.getElementById("quoteForm");
+    if (!form) return;
+    form.addEventListener("submit", function(e) {
+      if (!handleSubmit(e)) e.preventDefault();
+    });
+    var params = new URLSearchParams(window.location.search);
+    if (params.get("quote") === "sent") {
+      form.style.display = "none";
+      var ok = document.getElementById("formSuccess");
+      if (ok) ok.style.display = "block";
+    }
+  })();
 
   if ("IntersectionObserver" in window) {
     var io = new IntersectionObserver(function(entries) {
